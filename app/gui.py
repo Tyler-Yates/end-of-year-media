@@ -9,11 +9,15 @@ from PIL import Image, ImageTk
 from app.image_util import ImageUtil
 
 
+WINDOW_WIDTH_PX = 1920
+WINDOW_HEIGHT_PX = 1200
+
+
 class Gui:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Image Preview - Sorted by Date Taken")
-        self.root.geometry("800x600")
+        self.root.geometry(f"{WINDOW_WIDTH_PX}x{WINDOW_HEIGHT_PX}")
 
         # Create a label to display the image
         self.images = []
@@ -40,7 +44,7 @@ class Gui:
             else:
                 img = Image.open(image_path)
 
-            img.thumbnail((800, 600))  # Resize to fit the window
+            img.thumbnail((WINDOW_WIDTH_PX - 100, WINDOW_HEIGHT_PX - 100))  # Resize to fit the window
             img_tk = ImageTk.PhotoImage(img)
 
             # Update the image label
