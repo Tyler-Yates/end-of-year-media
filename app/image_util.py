@@ -24,7 +24,7 @@ class ImageUtil:
 
     def _save_exif_cache(self):
         try:
-            with open(self.exif_cache_filename, 'w') as f:
+            with open(self.exif_cache_filename, "w") as f:
                 json.dump(self.exif_cache, f, indent=4)
             print(f"exif cache saved to {self.exif_cache_filename} with {len(self.exif_cache)} entries")
         except Exception as e:
@@ -35,7 +35,7 @@ class ImageUtil:
             return dict()
 
         try:
-            with open(self.exif_cache_filename, 'r') as f:
+            with open(self.exif_cache_filename, "r") as f:
                 loaded_dict = json.load(f)
             print(f"Exif cache loaded from {self.exif_cache_filename} with {len(loaded_dict)} entries")
             return loaded_dict
@@ -70,7 +70,7 @@ class ImageUtil:
 
         sorted_images = sorted(
             grouped_files.values(),
-            key=lambda x: self.get_date_taken(str(x)) or "9999:99:99 99:99:99"  # Use a large value for missing EXIF
+            key=lambda x: self.get_date_taken(str(x)) or "9999:99:99 99:99:99",  # Use a large value for missing EXIF
         )
 
         # Save the exif cache since reading exif data is very expensive
@@ -92,7 +92,7 @@ class ImageUtil:
         try:
             # Get file modified time and format it to match EXIF datetime format
             modified_timestamp = os.path.getmtime(file_path)
-            modified_time = datetime.fromtimestamp(modified_timestamp).strftime('%Y:%m:%d %H:%M:%S')
+            modified_time = datetime.fromtimestamp(modified_timestamp).strftime("%Y:%m:%d %H:%M:%S")
             return modified_time
         except Exception as e:
             print(f"Error getting modified time for {file_path}: {e}")
@@ -131,4 +131,3 @@ class ImageUtil:
                 self.new_exif_files = 0
 
         return date_taken
-
