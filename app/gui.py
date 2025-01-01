@@ -1,7 +1,7 @@
 import io
 import tkinter as tk
 from pathlib import Path
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, simpledialog
 from typing import Optional
 
 import rawpy
@@ -34,6 +34,7 @@ class Gui:
         self.root.bind("<Left>", self._on_left_arrow)
         self.root.bind("<Right>", self._on_right_arrow)
         self.root.bind("<s>", self._on_save)
+        self.root.bind("<g>", self._on_g_key)
 
     def run(self):
         self.root.mainloop()
@@ -50,7 +51,7 @@ class Gui:
             img_tk = ImageTk.PhotoImage(img)
 
             # Update the image label
-            self.root.title(image_path.name)
+            self.root.title(f"{self.current_index}/{len(self.images) - 1} - {str(image_path)}")
             self.image_label.config(image=img_tk)
             self.image_label.image = img_tk
         except Exception as e:
@@ -100,3 +101,22 @@ class Gui:
     def _on_save(self, event):
         if self.image_util:
             self.image_util.save_image(self.images[self.current_index])
+
+    def _on_g_key(self, event):
+        """Prompt the user to input an index to go to a specific image."""
+        if not self.images:
+            messagebox.showinfo("No Images", "There are no images to navigate to.")
+            return
+
+        index_str = simpledialog.askstring("Go to Image", "Enter the image index (0-based):")
+        if index_str is not None:
+            try:
+                index = int(index_str)
+                if 0 <= index < len(self.images):
+                    self.current_index = index
+                    self._display_image(self.images[self.current_index])
+                else:
+                    messagebox.showerror("Invalid Index", "The index is out of range.")
+            except ValueError:
+                messagebox.showerror("Invalid Input", "Please enter a valid number.")
+
