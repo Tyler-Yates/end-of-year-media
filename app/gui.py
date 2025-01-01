@@ -55,6 +55,7 @@ class Gui:
 
             # Update the image label
             self.root.title(f"{self.current_index}/{len(self.images) - 1} - {str(image_path)}")
+            # noinspection PyTypeChecker
             self.image_label.config(image=img_tk)
             self.image_label.image = img_tk
         except Exception as e:
@@ -91,22 +92,26 @@ class Gui:
         else:
             messagebox.showinfo("No Images Found", "No valid image files were found in the selected folder.")
 
+    # noinspection PyUnusedLocal
     def _on_left_arrow(self, event):
         """Move to the previous image when the left arrow key is pressed."""
         if self.images:
             self.current_index = (self.current_index - 1) % len(self.images)
             self._display_image(self.images[self.current_index])
 
+    # noinspection PyUnusedLocal
     def _on_right_arrow(self, event):
         """Move to the next image when the right arrow key is pressed."""
         if self.images:
             self.current_index = (self.current_index + 1) % len(self.images)
             self._display_image(self.images[self.current_index])
 
+    # noinspection PyUnusedLocal
     def _on_save(self, event):
         if self.image_util:
             self.image_util.save_image(self.images[self.current_index])
 
+    # noinspection PyUnusedLocal
     def _on_g_key(self, event):
         """Prompt the user to input an index to go to a specific image."""
         if not self.images:
