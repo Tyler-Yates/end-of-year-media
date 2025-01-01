@@ -1,3 +1,5 @@
+import os.path
+import shutil
 from pathlib import Path
 from typing import Optional
 
@@ -7,6 +9,12 @@ import pyexiv2
 class ImageUtil:
     def __init__(self, folder_root: str):
         self.folder_root = folder_root
+
+        self.year = os.path.basename(self.folder_root)
+        if self.year.isdigit() and len(self.year) == 4:
+            self.highlights_orig_folder = os.path.join(self.folder_root, f"{self.year} Highlights", "Originals")
+        else:
+            raise ValueError(f"Folder is not a date: {self.year}")
 
     def find_images(self) -> list[Path]:
         """
@@ -40,6 +48,11 @@ class ImageUtil:
         # )
         print("Finished sorting")
         return sorted_images
+
+    def save_image(self, image_path: Path):
+        print(f"Saving file {image_path}")
+        os.makedirs(self.highlights_orig_folder, exist_ok=True)
+        shutil.copy(image_path, os.path.join(self.highlights_orig_folder))
 
     @staticmethod
     def get_date_taken(file_path: str) -> Optional[str]:

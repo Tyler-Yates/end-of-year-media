@@ -2,6 +2,7 @@ import io
 import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox
+from typing import Optional
 
 import rawpy
 from PIL import Image, ImageTk
@@ -23,6 +24,7 @@ class Gui:
         self.current_index = 0
         self.image_label = tk.Label(self.root)
         self.image_label.pack(expand=True, fill=tk.BOTH)
+        self.image_util: Optional[ImageUtil] = None
 
         # Create a button to browse a folder
         browse_button = tk.Button(self.root, text="Browse Folder", command=lambda: self._browse_folder())
@@ -31,6 +33,7 @@ class Gui:
         # Bind arrow keys for navigation
         self.root.bind("<Left>", self._on_left_arrow)
         self.root.bind("<Right>", self._on_right_arrow)
+        self.root.bind("<s>", self._on_save)
 
     def run(self):
         self.root.mainloop()
@@ -74,9 +77,9 @@ class Gui:
             return
 
         print(f"Finding images in dir {folder_path}...")
-        image_util = ImageUtil(folder_path)
+        self.image_util = ImageUtil(folder_path)
 
-        self.images = image_util.find_images()
+        self.images = self.image_util.find_images()
         if self.images:
             self._display_image(self.images[0])
         else:
@@ -93,3 +96,7 @@ class Gui:
         if self.images:
             self.current_index = (self.current_index + 1) % len(self.images)
             self._display_image(self.images[self.current_index])
+
+    def _on_save(self, event):
+        if self.image_util:
+            self.image_util.save_image(self.images[self.current_index])
