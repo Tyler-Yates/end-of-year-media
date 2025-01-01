@@ -2,3 +2,4 @@ venv/
 .idea/
 *.pyc
 *_exif_cache.json
+*_index.txt

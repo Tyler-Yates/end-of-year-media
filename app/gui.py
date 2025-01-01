@@ -1,4 +1,5 @@
 import io
+import os.path
 import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox, simpledialog
@@ -30,11 +31,13 @@ class Gui:
         browse_button = tk.Button(self.root, text="Browse Folder", command=lambda: self._browse_folder())
         browse_button.pack(pady=10)
 
-        # Bind arrow keys for navigation
+        # Bind arrow keys for actions
         self.root.bind("<Left>", self._on_left_arrow)
         self.root.bind("<Right>", self._on_right_arrow)
         self.root.bind("<s>", self._on_save)
         self.root.bind("<g>", self._on_g_key)
+
+        self.root.protocol("WM_DELETE_WINDOW", self._on_close)
 
     def run(self):
         self.root.mainloop()
@@ -82,7 +85,9 @@ class Gui:
 
         self.images = self.image_util.find_images()
         if self.images:
-            self._display_image(self.images[0])
+            self._load_index()
+
+            self._display_image(self.images[self.current_index])
         else:
             messagebox.showinfo("No Images Found", "No valid image files were found in the selected folder.")
 
@@ -120,3 +125,43 @@ class Gui:
             except ValueError:
                 messagebox.showerror("Invalid Input", "Please enter a valid number.")
 
+    def _load_index(self):
+        if not self.image_util:
+            return
+
+        index_file_name = f"{self.image_util.year}_index.txt"
+
+        if not os.path.exists(index_file_name):
+            return
+
+        with open(index_file_name, "r") as f:
+            saved_index = int(f.read())
+            if 0 <= saved_index < len(self.images):
+                self.current_index = saved_index
+                print(f"Loaded index {self.current_index}.")
+            else:
+                print(f"Saved index {saved_index} is out of range. Using default index 0.")
+                self.current_index = 0
+
+
+    def _save_index(self):
+        """Save the current index to a file."""
+
+        if not self.image_util:
+            return
+
+        try:
+            with open(f"{self.image_util.year}_index.txt", "w") as f:
+                f.write(str(self.current_index))
+            print(f"Index {self.current_index} has been saved.")
+        except Exception as e:
+            print(f"Failed to save index: {e}")
+
+    def _on_close(self):
+        """This function runs when the window is closed."""
+        print("Window is closing... saving place.")
+
+        if self.image_util:
+            self._save_index()
+
+        self.root.destroy()  # Close the Tkinter window
