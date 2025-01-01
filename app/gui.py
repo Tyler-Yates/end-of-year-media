@@ -8,7 +8,6 @@ from PIL import Image, ImageTk
 
 from app.image_util import ImageUtil
 
-
 WINDOW_WIDTH_PX = 1920
 WINDOW_HEIGHT_PX = 1200
 
