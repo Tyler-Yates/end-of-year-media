@@ -143,7 +143,6 @@ class Gui:
                 print(f"Saved index {saved_index} is out of range. Using default index 0.")
                 self.current_index = 0
 
-
     def _save_index(self):
         """Save the current index to a file."""
 
