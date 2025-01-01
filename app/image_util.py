@@ -25,6 +25,7 @@ class ImageUtil:
     def _save_exif_cache(self):
         try:
             with open(self.exif_cache_filename, "w") as f:
+                # noinspection PyTypeChecker
                 json.dump(self.exif_cache, f, indent=4)
             print(f"exif cache saved to {self.exif_cache_filename} with {len(self.exif_cache)} entries")
         except Exception as e:
