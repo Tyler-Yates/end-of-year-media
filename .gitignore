@@ -3,3 +3,4 @@ venv/
 *.pyc
 *_exif_cache.json
 *_index.txt
+.tox/
