@@ -1,3 +1,4 @@
+import io
 import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox
@@ -52,9 +53,14 @@ class Gui:
     def _open_raw_image(rw2_path: Path) -> Image:
         """Open a RW2 raw image and convert it to a Pillow image."""
         with rawpy.imread(str(rw2_path)) as raw:
-            rgb = raw.postprocess()
-            # Convert the numpy array (RGB) to a Pillow image
-            img = Image.fromarray(rgb)
+            # Extract the thumbnail image directly from the RAW file which is very fast
+            thumb = raw.extract_thumb()
+
+            # Convert the thumbnail to a BytesIO object to pass it to Pillow
+            thumb_data = thumb.data
+            thumb_io = io.BytesIO(thumb_data)
+            img = Image.open(thumb_io)
+            img = img.convert("RGB")
         return img
 
     def _browse_folder(self):
