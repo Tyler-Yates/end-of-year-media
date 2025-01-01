@@ -16,7 +16,7 @@ class Gui:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Image Preview - Sorted by Date Taken")
-        self.root.geometry(f"{WINDOW_WIDTH_PX}x{WINDOW_HEIGHT_PX}")
+        self.root.geometry(f"{WINDOW_WIDTH_PX}x{WINDOW_HEIGHT_PX}+800+100")
 
         # Create a label to display the image
         self.images = []
@@ -47,6 +47,7 @@ class Gui:
             img_tk = ImageTk.PhotoImage(img)
 
             # Update the image label
+            self.root.title(image_path.name)
             self.image_label.config(image=img_tk)
             self.image_label.image = img_tk
         except Exception as e:
