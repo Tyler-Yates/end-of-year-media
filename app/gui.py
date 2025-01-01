@@ -15,12 +15,18 @@ class Gui:
         self.root.geometry("800x600")
 
         # Create a label to display the image
+        self.images = []
+        self.current_index = 0
         self.image_label = tk.Label(self.root)
         self.image_label.pack(expand=True, fill=tk.BOTH)
 
         # Create a button to browse a folder
         browse_button = tk.Button(self.root, text="Browse Folder", command=lambda: self._browse_folder())
         browse_button.pack(pady=10)
+
+        # Bind arrow keys for navigation
+        self.root.bind("<Left>", self._on_left_arrow)
+        self.root.bind("<Right>", self._on_right_arrow)
 
     def run(self):
         self.root.mainloop()
@@ -60,33 +66,20 @@ class Gui:
         print(f"Finding images in dir {folder_path}...")
         image_util = ImageUtil(folder_path)
 
-        images = image_util.find_images()
-        if images:
-            self._display_image(images[0])
-            # Add navigation buttons
-            self._setup_navigation_buttons(images)
+        self.images = image_util.find_images()
+        if self.images:
+            self._display_image(self.images[0])
         else:
             messagebox.showinfo("No Images Found", "No valid image files were found in the selected folder.")
 
-    def _setup_navigation_buttons(self, images):
-        """Set up navigation buttons to browse through images."""
+    def _on_left_arrow(self, event):
+        """Move to the previous image when the left arrow key is pressed."""
+        if self.images:
+            self.current_index = (self.current_index - 1) % len(self.images)
+            self._display_image(self.images[self.current_index])
 
-        def show_next():
-            nonlocal current_index
-            current_index = (current_index + 1) % len(images)
-            self._display_image(images[current_index])
-
-        def show_prev():
-            nonlocal current_index
-            current_index = (current_index - 1) % len(images)
-            self._display_image(images[current_index])
-
-        # Starting index
-        current_index = 0
-
-        # Create buttons for navigation
-        next_button = tk.Button(self.root, text="Next", command=show_next)
-        next_button.pack(side=tk.RIGHT, padx=10, pady=10)
-
-        prev_button = tk.Button(self.root, text="Previous", command=show_prev)
-        prev_button.pack(side=tk.LEFT, padx=10, pady=10)
+    def _on_right_arrow(self, event):
+        """Move to the next image when the right arrow key is pressed."""
+        if self.images:
+            self.current_index = (self.current_index + 1) % len(self.images)
+            self._display_image(self.images[self.current_index])
